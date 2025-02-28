@@ -20,7 +20,7 @@ def get_product(product_id: int, db: Session):
 def create_product(product: schema.ProductCreate, db: Session):
     # nama produk tidak kosong
     if not product.name or product.name.strip() == "":
-        raise HTTPException(status_code=400, detail="Nama produk telah digunakan")
+        raise HTTPException(status_code=400, detail="Nama produk tidak boleh kosong")
 
     # Harga lebih dari 0
     if product.price <= 0:
