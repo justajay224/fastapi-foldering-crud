@@ -8,6 +8,7 @@ def get_products(db: Session):
 def get_product_by_id(db: Session, product_id: int):
     return db.query(models.Product).filter(models.Product.id == product_id).first()
 
+
 def get_product_by_name(db: Session, name: str):
     return db.query(models.Product).filter(models.Product.name == name).first()
 

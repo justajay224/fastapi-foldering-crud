@@ -4,36 +4,36 @@ from src.service import product_service
 from src.repository import product_repository
 import schema
 
-# All produk
+# get All produk
 def get_all_products(db: Session):
     products = product_service.get_all_products(db)
     return products
 
-# produk berdasarkan ID
+# get produk berdasarkan ID
 def get_product(product_id: int, db: Session):
     product = product_service.get_product(db, product_id)
     if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
     return product
 
-# Add produk + Validasi ID unik dan tipe data
+# Add produk + Validasi 
 def create_product(product: schema.ProductCreate, db: Session):
     # nama produk tidak kosong
     if not product.name or product.name.strip() == "":
-        raise HTTPException(status_code=400, detail="Product name cannot be empty")
+        raise HTTPException(status_code=400, detail="Nama produk telah digunakan")
 
-    # Harga harus lebih dari 0
+    # Harga lebih dari 0
     if product.price <= 0:
-        raise HTTPException(status_code=400, detail="Price must be greater than zero")
+        raise HTTPException(status_code=400, detail="Harga harus lebih dari 0")
     
-    # Validasi: Stok tidak boleh negatif
+    # Stok tidak negatif
     if product.stock < 0:
-        raise HTTPException(status_code=400, detail="Stock cannot be negative")
+        raise HTTPException(status_code=400, detail="Stok tidak boleh kurang dari 0")
 
-    # Validasi: Pastikan produk dengan nama yang sama belum ada di database
+    # Cek nama
     existing_product = product_repository.get_product_by_name(db, product.name)
     if existing_product:
-        raise HTTPException(status_code=400, detail="Product with this name already exists")
+        raise HTTPException(status_code=400, detail="Nama produk telah digunakan")
 
     return product_service.create_new_product(db, product)
 
@@ -41,15 +41,18 @@ def create_product(product: schema.ProductCreate, db: Session):
 def update_product(product_id: int, product: schema.ProductCreate, db: Session):
     existing_product = product_repository.get_product_by_id(db, product_id)
     if not existing_product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
 
-    # produk tidak kosong
+    # nama tidak kosong
     if not product.name or product.name.strip() == "":
-        raise HTTPException(status_code=400, detail="Product name cannot be empty")
+        raise HTTPException(status_code=400, detail="Nama tidak boleh kosong")
 
     # Harga harus lebih dari 0
     if product.price <= 0:
-        raise HTTPException(status_code=400, detail="Price must be greater than zero")
+        raise HTTPException(status_code=400, detail="Harga harus lebih dari 0")
+    
+    if product.stock < 0:
+        raise HTTPException(status_code=400, detail="Stok tidak boleh kurang dari 0")
 
     updated_product = product_service.update_existing_product(db, product_id, product)
     return updated_product
@@ -58,7 +61,7 @@ def update_product(product_id: int, product: schema.ProductCreate, db: Session):
 def delete_product(product_id: int, db: Session):
     existing_product = product_repository.get_product_by_id(db, product_id)
     if not existing_product:
-        raise HTTPException(status_code=404, detail="Product not found")
+        raise HTTPException(status_code=404, detail="Produk tidak ditemukan")
 
     deleted_product = product_service.delete_existing_product(db, product_id)
-    return {"message": "Product deleted successfully"}
+    return {"message": "produk berhasil di hapus"}
