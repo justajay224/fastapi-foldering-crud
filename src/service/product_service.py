@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from src.repository import product_repository
 import schema
 
-# lait All produk
+# liat All produk
 def get_all_products(db: Session):
     return product_repository.get_products(db)
 

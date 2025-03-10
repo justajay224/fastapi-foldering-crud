@@ -5,7 +5,7 @@ from src.controller import product_controller
 import schema
 
 router = APIRouter(
-    prefix="/products",
+    prefix="/orm/products",
     tags=["Products"]
 )
 
