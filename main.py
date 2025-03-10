@@ -1,16 +1,18 @@
 from fastapi import FastAPI
 from database.database import engine
 from src.models import models
-from route import product_route, product_non_orm_route
+from route.index import all_routers 
 
 app = FastAPI()
 
-
+# Database setup 
 models.Base.metadata.create_all(bind=engine)
 
-app.include_router(product_route.router)
-app.include_router(product_non_orm_route.router)
+# Include semua router sekaligus
+for router in all_routers:
+    app.include_router(router)
 
+# Home route
 @app.get("/")
 def home():
     return {"message": "Welcome to FastAPI CRUD Product"}
