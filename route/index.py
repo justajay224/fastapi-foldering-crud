@@ -1,14 +1,9 @@
-from .product_route import router as router_orm
-from .product_non_orm_route import router as router_non_orm
-
-__all__ = ["all_routers"]
-
-
-all_routers = [
-    router_orm,
-    router_non_orm
-]
+import os
+from importlib import import_module
 
 def include_routers(app):
-    for router in all_routers:
-        app.include_router(router)
+    for file in os.listdir(os.path.dirname(__file__)): #cek daftar file
+        if file.endswith("_route.py") and file not in {"__init__.py", "index.py"}: #validasi file
+            module = import_module(f".{file[:-3]}", __package__) #import file dan menghapus ".py"
+            if router := getattr(module, "router", None): #ngecek, dalam modul ada atribute router
+                app.include_router(router)

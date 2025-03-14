@@ -11,6 +11,6 @@ models.Base.metadata.create_all(bind=engine)
 include_routers(app)
 
 # Home route
-@app.get("/")
-def home():
-    return {"message": "Welcome to FastAPI CRUD Product"}
+# @app.get("/")
+# def home():
+#     return {"message": "FastAPI CRUD Produk"}
